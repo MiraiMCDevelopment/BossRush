@@ -1,0 +1,16 @@
+events:
+  ender_dragon:
+    entity: ENDER_DRAGON
+    time: 1800
+    started:
+      title: "&b&lEvent Started"
+      subtitle: "&fObjective: Kill Ender Dragon"
+      messages:
+        - "&aEvent has been started!"
+    ended:
+      title: "&c&lEvent Ended"
+      subtitle: "&fWinner: &b{player}"
+      messages:
+        - "&aEvent has been ended"
+    reward:
+      - ""

@@ -1,0 +1,5 @@
+name: MiraiSMPEvents
+version: '1.0-SNAPSHOT'
+main: org.miraimc.miraiSMPEvents.MiraiSMPEvents
+api-version: '1.21'
+authors: [ MiraiMC Development ]
