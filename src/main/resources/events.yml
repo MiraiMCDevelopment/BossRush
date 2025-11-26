@@ -1,7 +1,7 @@
 events:
   ender_dragon:
     entity: ENDER_DRAGON
-    time: 1800
+    max_time: 1800
     started:
       title: "&b&lEvent Started"
       subtitle: "&fObjective: Kill Ender Dragon"
@@ -9,8 +9,10 @@ events:
         - "&aEvent has been started!"
     ended:
       title: "&c&lEvent Ended"
-      subtitle: "&fWinner: &b{player}"
+      subtitle: "&fWinner: &b{winner}"
       messages:
-        - "&aEvent has been ended"
+        - "&aEvent has been ended!"
+        - "&fWinner: &b{winner}"
+        - "&fTime: &b{time_ms}"
     reward:
       - ""

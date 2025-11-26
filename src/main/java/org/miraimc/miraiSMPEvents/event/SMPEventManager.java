@@ -8,14 +8,17 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.miraimc.miraiSMPEvents.MiraiSMPEvents;
+import org.miraimc.miraiSMPEvents.event.task.SMPEventTask;
 import org.miraimc.miraiSMPEvents.util.TextUtil;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class SMPEventManager {
 
     private final MiraiSMPEvents plugin;
     @Getter private SMPEvent smpEvent;
+    private SMPEventTask smpEventTask;
 
     public SMPEventManager(MiraiSMPEvents plugin) {
         this.plugin = plugin;
@@ -30,9 +33,9 @@ public class SMPEventManager {
 
         String entityStr = section.getString("entity");
         EntityType entity = EntityType.fromName(entityStr);
-        int time = section.getInt("time");
+        int maxTime = section.getInt("max_time");
 
-        smpEvent = new SMPEvent(name, entity, time);
+        smpEvent = new SMPEvent(name, entity, maxTime);
         return true;
     }
 
@@ -56,6 +59,11 @@ public class SMPEventManager {
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1.0F, 1.0F);
             messages.forEach(player::sendMessage);
         });
+
+        if (smpEventTask == null || smpEventTask.isCancelled()) {
+            smpEventTask = new SMPEventTask(plugin);
+            smpEventTask.runTaskTimer(plugin, 0L, 20L);
+        }
     }
 
     public void endEvent(SMPEvent smpEvent) {
@@ -73,20 +81,29 @@ public class SMPEventManager {
         String subtitleStr = section.getString("subtitle");
         List<String> messages = section.getStringList("messages");
 
-        Bukkit.getOnlinePlayers().forEach(player -> {
-            if (winner == null) {
+        if (winner == null) {
+            Bukkit.getOnlinePlayers().forEach(player -> {
                 player.sendMessage(plugin.getLangFile().getString("event.force_ended"));
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
-                return;
-            }
+            });
+            return;
+        }
 
+        smpEvent.setWinnerUuid(winner.getUniqueId());
+        Bukkit.getOnlinePlayers().forEach(player -> {
             Title title = Title.title(
                     TextUtil.translate(titleStr.replace("{winner}", winner.getName())),
                     TextUtil.translate(subtitleStr.replace("{winner}", winner.getName()))
             );
             player.showTitle(title);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
-            messages.forEach(player::sendMessage);
+            messages.forEach(message -> player.sendMessage(message
+                    .replace("{winner}", winner.getName())
+                    .replace("{time}", titleStr)
+                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(smpEvent.getEndedAt()) - smpEvent.getStartedAt()))
+            ));
         });
+
+        smpEventTask.cancel();
     }
 }

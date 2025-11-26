@@ -27,7 +27,7 @@ public class SMPEventCommand extends BaseCommand {
         }
 
         SMPEvent smpEvent = plugin.getSmpEventManager().getSmpEvent();
-        if (smpEvent == null) {
+        if (smpEvent == null || smpEvent.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_start")));
             return;
         }
@@ -38,6 +38,19 @@ public class SMPEventCommand extends BaseCommand {
     @Subcommand("end")
     public void onEnd(Player sender) {
         SMPEvent smpEvent = plugin.getSmpEventManager().getSmpEvent();
+        if (smpEvent == null || !smpEvent.isRunning()) {
+            sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_end")));
+            return;
+        }
         plugin.getSmpEventManager().endEvent(smpEvent);
+    }
+
+    @Subcommand("reload")
+    public void onReload(Player sender) {
+        plugin.getConfigFile().reload();
+        plugin.getLangFile().reload();
+        plugin.getEventsFile().reload();
+
+        sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("reload")));
     }
 }

@@ -27,8 +27,8 @@ public class SMPEventListener implements Listener {
         }
 
         if (event.getEntityType() == smpEvent.getEntityType()) {
-            Player damager = event.getEntity().getKiller();
-            plugin.getSmpEventManager().endEvent(smpEvent, damager);
+            Player killer = event.getEntity().getKiller();
+            plugin.getSmpEventManager().endEvent(smpEvent, killer);
         }
     }
 }
