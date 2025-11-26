@@ -1,4 +1,4 @@
-package org.miraimc.miraiSMPEvents.util;
+package org.miraimc.bossRush.util;
 
 import lombok.experimental.UtilityClass;
 import net.kyori.adventure.text.Component;

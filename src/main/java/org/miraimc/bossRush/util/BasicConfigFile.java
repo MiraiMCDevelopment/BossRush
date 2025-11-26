@@ -1,4 +1,4 @@
-package org.miraimc.miraiSMPEvents.util;
+package org.miraimc.bossRush.util;
 
 import lombok.Getter;
 import lombok.Setter;

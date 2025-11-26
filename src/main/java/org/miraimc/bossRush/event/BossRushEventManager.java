@@ -1,4 +1,4 @@
-package org.miraimc.miraiSMPEvents.event;
+package org.miraimc.bossRush.event;
 
 import lombok.Getter;
 import net.kyori.adventure.title.Title;
@@ -7,20 +7,20 @@ import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
-import org.miraimc.miraiSMPEvents.MiraiSMPEvents;
-import org.miraimc.miraiSMPEvents.event.task.SMPEventTask;
-import org.miraimc.miraiSMPEvents.util.TextUtil;
+import org.miraimc.bossRush.BossRush;
+import org.miraimc.bossRush.event.task.BossRushTask;
+import org.miraimc.bossRush.util.TextUtil;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-public class SMPEventManager {
+public class BossRushEventManager {
 
-    private final MiraiSMPEvents plugin;
-    @Getter private SMPEvent smpEvent;
-    private SMPEventTask smpEventTask;
+    private final BossRush plugin;
+    @Getter private BossRushEvent bossRushEvent;
+    private BossRushTask bossRushTask;
 
-    public SMPEventManager(MiraiSMPEvents plugin) {
+    public BossRushEventManager(BossRush plugin) {
         this.plugin = plugin;
     }
 
@@ -35,15 +35,15 @@ public class SMPEventManager {
         EntityType entity = EntityType.fromName(entityStr);
         int maxTime = section.getInt("max_time");
 
-        smpEvent = new SMPEvent(name, entity, maxTime);
+        bossRushEvent = new BossRushEvent(name, entity, maxTime);
         return true;
     }
 
-    public void startEvent(SMPEvent smpEvent) {
-        smpEvent.setStartedAt(System.currentTimeMillis());
-        smpEvent.setRunning(true);
+    public void startEvent(BossRushEvent bossRushEvent) {
+        bossRushEvent.setStartedAt(System.currentTimeMillis());
+        bossRushEvent.setRunning(true);
 
-        String path = "events." + smpEvent.getName() + ".";
+        String path = "events." + bossRushEvent.getName() + ".";
         ConfigurationSection section = plugin.getEventsFile().getConfigurationSection(path + "started");
 
         String titleStr = section.getString("title");
@@ -60,21 +60,21 @@ public class SMPEventManager {
             messages.forEach(player::sendMessage);
         });
 
-        if (smpEventTask == null || smpEventTask.isCancelled()) {
-            smpEventTask = new SMPEventTask(plugin);
-            smpEventTask.runTaskTimer(plugin, 0L, 20L);
+        if (bossRushTask == null || bossRushTask.isCancelled()) {
+            bossRushTask = new BossRushTask(plugin);
+            bossRushTask.runTaskTimer(plugin, 0L, 20L);
         }
     }
 
-    public void endEvent(SMPEvent smpEvent) {
-        endEvent(smpEvent, null);
+    public void endEvent(BossRushEvent bossRushEvent) {
+        endEvent(bossRushEvent, null);
     }
 
-    public void endEvent(SMPEvent smpEvent, Player winner) {
-        smpEvent.setEndedAt(System.currentTimeMillis());
-        smpEvent.setRunning(false);
+    public void endEvent(BossRushEvent bossRushEvent, Player winner) {
+        bossRushEvent.setEndedAt(System.currentTimeMillis());
+        bossRushEvent.setRunning(false);
 
-        String path = "events." + smpEvent.getName() + ".";
+        String path = "events." + bossRushEvent.getName() + ".";
         ConfigurationSection section = plugin.getEventsFile().getConfigurationSection(path + "ended");
 
         String titleStr = section.getString("title");
@@ -89,7 +89,7 @@ public class SMPEventManager {
             return;
         }
 
-        smpEvent.setWinnerUuid(winner.getUniqueId());
+        bossRushEvent.setWinnerUuid(winner.getUniqueId());
         Bukkit.getOnlinePlayers().forEach(player -> {
             Title title = Title.title(
                     TextUtil.translate(titleStr.replace("{winner}", winner.getName())),
@@ -100,10 +100,10 @@ public class SMPEventManager {
             messages.forEach(message -> player.sendMessage(message
                     .replace("{winner}", winner.getName())
                     .replace("{time}", titleStr)
-                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(smpEvent.getEndedAt()) - smpEvent.getStartedAt()))
+                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(bossRushEvent.getEndedAt()) - bossRushEvent.getStartedAt()))
             ));
         });
 
-        smpEventTask.cancel();
+        bossRushTask.cancel();
     }
 }

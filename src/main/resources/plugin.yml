@@ -1,5 +1,5 @@
-name: MiraiSMPEvents
+name: BossRush
 version: '1.0-SNAPSHOT'
-main: org.miraimc.miraiSMPEvents.MiraiSMPEvents
+main: org.miraimc.bossRush.BossRush
 api-version: '1.21'
 authors: [ MiraiMC Development ]

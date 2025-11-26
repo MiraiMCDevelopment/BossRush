@@ -1,4 +1,4 @@
-package org.miraimc.miraiSMPEvents.event;
+package org.miraimc.bossRush.event;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class SMPEvent {
+public class BossRushEvent {
 
     private String name;
     private EntityType entityType;
@@ -19,7 +19,7 @@ public class SMPEvent {
     private long startedAt;
     private long endedAt;
 
-    public SMPEvent(String name, EntityType entityType, int maxTime) {
+    public BossRushEvent(String name, EntityType entityType, int maxTime) {
         this.name = name;
         this.entityType = entityType;
         this.maxTime = maxTime;

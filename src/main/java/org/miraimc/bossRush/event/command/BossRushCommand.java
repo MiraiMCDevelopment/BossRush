@@ -1,48 +1,48 @@
-package org.miraimc.miraiSMPEvents.event.command;
+package org.miraimc.bossRush.event.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
 import org.bukkit.entity.Player;
-import org.miraimc.miraiSMPEvents.MiraiSMPEvents;
-import org.miraimc.miraiSMPEvents.event.SMPEvent;
-import org.miraimc.miraiSMPEvents.util.TextUtil;
+import org.miraimc.bossRush.BossRush;
+import org.miraimc.bossRush.event.BossRushEvent;
+import org.miraimc.bossRush.util.TextUtil;
 
-@CommandAlias("miraismpevent|smpevent|event")
-@CommandPermission("miraismpevent.admin")
-public class SMPEventCommand extends BaseCommand {
+@CommandAlias("bossrush")
+@CommandPermission("bossrush.admin")
+public class BossRushCommand extends BaseCommand {
 
-    private final MiraiSMPEvents plugin;
+    private final BossRush plugin;
 
-    public SMPEventCommand(MiraiSMPEvents plugin) {
+    public BossRushCommand(BossRush plugin) {
         this.plugin = plugin;
     }
 
     @Subcommand("start")
     public void onStart(Player sender, String event) {
-        if (!plugin.getSmpEventManager().loadEvent(event)) {
+        if (!plugin.getBossRushEventManager().loadEvent(event)) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_load")));
             return;
         }
 
-        SMPEvent smpEvent = plugin.getSmpEventManager().getSmpEvent();
-        if (smpEvent == null || smpEvent.isRunning()) {
+        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
+        if (bossRushEvent == null || bossRushEvent.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_start")));
             return;
         }
 
-        plugin.getSmpEventManager().startEvent(smpEvent);
+        plugin.getBossRushEventManager().startEvent(bossRushEvent);
     }
 
     @Subcommand("end")
     public void onEnd(Player sender) {
-        SMPEvent smpEvent = plugin.getSmpEventManager().getSmpEvent();
-        if (smpEvent == null || !smpEvent.isRunning()) {
+        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
+        if (bossRushEvent == null || !bossRushEvent.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_end")));
             return;
         }
-        plugin.getSmpEventManager().endEvent(smpEvent);
+        plugin.getBossRushEventManager().endEvent(bossRushEvent);
     }
 
     @Subcommand("reload")
