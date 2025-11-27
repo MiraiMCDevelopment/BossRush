@@ -10,9 +10,9 @@ import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.task.BossRushTask;
 import org.miraimc.bossRush.util.TextUtil;
+import org.miraimc.bossRush.util.TimeFormatUtil;
 
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 public class BossRushEventManager {
 
@@ -25,7 +25,7 @@ public class BossRushEventManager {
     }
 
     public boolean loadEvent(String name) {
-        String path = "events." + name + ".";
+        String path = getPath(name);
         ConfigurationSection section = plugin.getEventsFile().getConfigurationSection(path);
         if (section == null) {
             return false;
@@ -43,7 +43,7 @@ public class BossRushEventManager {
         bossRushEvent.setStartedAt(System.currentTimeMillis());
         bossRushEvent.setRunning(true);
 
-        String path = "events." + bossRushEvent.getName() + ".";
+        String path = getPath(bossRushEvent.getName());
         ConfigurationSection section = plugin.getEventsFile().getConfigurationSection(path + "started");
 
         String titleStr = section.getString("title");
@@ -74,11 +74,11 @@ public class BossRushEventManager {
         bossRushEvent.setEndedAt(System.currentTimeMillis());
         bossRushEvent.setRunning(false);
 
-        String path = "events." + bossRushEvent.getName() + ".";
+        String path = getPath(bossRushEvent.getName());
         ConfigurationSection section = plugin.getEventsFile().getConfigurationSection(path + "ended");
 
-        String titleStr = section.getString("title");
-        String subtitleStr = section.getString("subtitle");
+        String titleStr = section.getString("title").replace("{winner}", winner.getName());
+        String subtitleStr = section.getString("subtitle").replace("{winner}", winner.getName());
         List<String> messages = section.getStringList("messages");
 
         if (winner == null) {
@@ -92,18 +92,31 @@ public class BossRushEventManager {
         bossRushEvent.setWinnerUuid(winner.getUniqueId());
         Bukkit.getOnlinePlayers().forEach(player -> {
             Title title = Title.title(
-                    TextUtil.translate(titleStr.replace("{winner}", winner.getName())),
-                    TextUtil.translate(subtitleStr.replace("{winner}", winner.getName()))
+                    TextUtil.translate(titleStr),
+                    TextUtil.translate(subtitleStr)
             );
             player.showTitle(title);
+
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
+
+            String formattedTime = TimeFormatUtil.formatMillis(bossRushEvent.getEndedAt() - bossRushEvent.getStartedAt());
             messages.forEach(message -> player.sendMessage(TextUtil.translate(message
                     .replace("{winner}", winner.getName())
                     .replace("{time}", titleStr)
-                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(bossRushEvent.getEndedAt()) - TimeUnit.MINUTES.toSeconds(bossRushEvent.getStartedAt())))
+                    .replace("{formatted_time}", formattedTime)
             )));
         });
 
+        giveRewards(bossRushEvent);
+        bossRushTask.cancel();
+    }
+
+    private String getPath(String eventName) {
+        return "events." + eventName + ".";
+    }
+
+    private void giveRewards(BossRushEvent bossRushEvent) {
+        Player winner = Bukkit.getPlayer(bossRushEvent.getWinnerUuid());
         List<String> rewards = plugin.getEventsFile().getStringList("events." + bossRushEvent.getName() + ".rewards");
         for (String reward : rewards) {
             reward = reward.replace("{winner}", winner.getName());
@@ -112,7 +125,5 @@ public class BossRushEventManager {
                 plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward);
             }
         }
-
-        bossRushTask.cancel();
     }
 }

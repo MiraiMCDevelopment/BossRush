@@ -13,6 +13,6 @@ events:
       messages:
         - "&aEvent has been ended!"
         - "&fWinner: &b{winner}"
-        - "&fTime: &b{time_ms}"
+        - "&fTime: &b{formatted_time}"
     rewards:
       - "[Console] say {winner} is winner!"
