@@ -4,6 +4,4 @@ event:
   unable_start: "&cUnable to start an event."
   unable_end: "&cUnable to end an event."
   loaded: "&aBoss Rush &e{event} &ahas been loaded."
-boss_bar:
-  title: "Event: {event_name}"
 reload: "&aBossRush has been reloaded."

@@ -6,6 +6,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.miraimc.bossRush.BossRush;
+import org.miraimc.bossRush.event.BossRushEvent;
 
 public class BossBarListener implements Listener {
 
@@ -18,7 +19,11 @@ public class BossBarListener implements Listener {
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        plugin.getBossBarManager().registerPlayerBossBar(player);
+
+        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
+        if (bossRushEvent != null && bossRushEvent.isRunning()) {
+            plugin.getBossBarManager().registerPlayerBossBar(player);
+        }
     }
 
     @EventHandler

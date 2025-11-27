@@ -16,13 +16,22 @@ public class BossRushTask extends BukkitRunnable {
     @Override
     public void run() {
         BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
-        bossRushEvent.setTime(bossRushEvent.getTime() + 1);
-        Bukkit.getOnlinePlayers().forEach(player -> plugin.getBossBarManager().updateProgress(player));
-
-        if (bossRushEvent.getTime() >= bossRushEvent.getMaxTime()) {
-            plugin.getBossRushEventManager().endEvent(bossRushEvent);
+        if (bossRushEvent == null || !bossRushEvent.isRunning()) {
             cancel();
+            return;
         }
 
+        long elapsedMillis = System.currentTimeMillis() - bossRushEvent.getStartedAt();
+        int elapsedSeconds = (int) (elapsedMillis / 1000);
+
+        bossRushEvent.setTime(elapsedSeconds);
+
+        if (elapsedSeconds >= bossRushEvent.getMaxTime()) {
+            plugin.getBossRushEventManager().endEvent(bossRushEvent);
+            cancel();
+            return;
+        }
+
+        plugin.getBossBarManager().updateAllProgress();
     }
 }
