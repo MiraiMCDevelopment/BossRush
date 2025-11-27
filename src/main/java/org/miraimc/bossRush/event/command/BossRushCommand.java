@@ -84,6 +84,7 @@ public class BossRushCommand extends BaseCommand {
         plugin.getConfigFile().reload();
         plugin.getLangFile().reload();
         plugin.getEventsFile().reload();
+        plugin.getScheduleManager().loadSchedules();
 
         sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("reload")));
     }

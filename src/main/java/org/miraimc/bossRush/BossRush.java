@@ -6,6 +6,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.miraimc.bossRush.event.BossRushEventManager;
 import org.miraimc.bossRush.event.command.BossRushCommand;
 import org.miraimc.bossRush.event.listener.BossRushListener;
+import org.miraimc.bossRush.schedule.ScheduleManager;
 import org.miraimc.bossRush.util.BasicConfigFile;
 
 @Getter
@@ -13,6 +14,7 @@ public final class BossRush extends JavaPlugin {
 
     private BasicConfigFile configFile, langFile, eventsFile;
     private BossRushEventManager bossRushEventManager;
+    private ScheduleManager scheduleManager;
 
     @Override
     public void onEnable() {
@@ -38,6 +40,8 @@ public final class BossRush extends JavaPlugin {
     private void registerManagers() {
         getLogger().info("Registering BossRush managers");
         bossRushEventManager = new BossRushEventManager(this);
+        scheduleManager = new ScheduleManager(this);
+        scheduleManager.loadSchedules();
     }
 
     private void registerListeners() {
