@@ -14,18 +14,44 @@ import org.miraimc.bossRush.util.TextUtil;
 public class BossRushCommand extends BaseCommand {
 
     private final BossRush plugin;
+    private static final String LINE = "&7&m----------------------------------------";
 
     public BossRushCommand(BossRush plugin) {
         this.plugin = plugin;
     }
 
-    @Subcommand("start")
-    public void onStart(Player sender, String event) {
+    @Subcommand("info")
+    public void onInfo(Player sender) {
+        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+
+        sender.sendMessage(TextUtil.translate(LINE));
+        sender.sendMessage(TextUtil.translate("&b&lBoss Rush"));
+
+        if (event == null) {
+            sender.sendMessage(TextUtil.translate("&fEvent is not loaded."));
+            sender.sendMessage(TextUtil.translate(LINE));
+            return;
+        }
+
+        sender.sendMessage(TextUtil.translate("&fEvent Name: &b" + event.getName()));
+        sender.sendMessage(TextUtil.translate("&fEvent Time: &b" + event.getTime()));
+        sender.sendMessage(TextUtil.translate("&fEvent Running: &b" + event.isRunning()));
+        sender.sendMessage(TextUtil.translate(LINE));
+    }
+
+    @Subcommand("load")
+    public void onLoad(Player sender, String event) {
         if (!plugin.getBossRushEventManager().loadEvent(event)) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_load")));
             return;
         }
 
+        sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.loaded")
+                .replace("{event}", event)));
+    }
+
+    @Subcommand("start")
+    public void onStart(Player sender) {
         BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
         if (bossRushEvent == null || bossRushEvent.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_start")));
