@@ -3,4 +3,5 @@ event:
   unable_load: "&cUnable to load an event."
   unable_start: "&cUnable to start an event."
   unable_end: "&cUnable to end an event."
+  loaded: "&aBoss Rush &e{event} &ahas been loaded."
 reload: "&aBossRush has been reloaded."

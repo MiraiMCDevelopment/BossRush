@@ -57,7 +57,7 @@ public class BossRushEventManager {
             );
             player.showTitle(title);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1.0F, 1.0F);
-            messages.forEach(player::sendMessage);
+            messages.forEach(message -> player.sendMessage(TextUtil.translate(message)));
         });
 
         if (bossRushTask == null || bossRushTask.isCancelled()) {
@@ -97,12 +97,21 @@ public class BossRushEventManager {
             );
             player.showTitle(title);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
-            messages.forEach(message -> player.sendMessage(message
+            messages.forEach(message -> player.sendMessage(TextUtil.translate(message
                     .replace("{winner}", winner.getName())
                     .replace("{time}", titleStr)
-                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(bossRushEvent.getEndedAt()) - bossRushEvent.getStartedAt()))
-            ));
+                    .replace("{time_ms}", String.valueOf(TimeUnit.MILLISECONDS.toSeconds(bossRushEvent.getEndedAt()) - TimeUnit.MINUTES.toSeconds(bossRushEvent.getStartedAt())))
+            )));
         });
+
+        List<String> rewards = plugin.getEventsFile().getStringList("events." + bossRushEvent.getName() + ".rewards");
+        for (String reward : rewards) {
+            reward = reward.replace("{winner}", winner.getName());
+            if (reward.startsWith("[Console] ")) {
+                reward = reward.replace("[Console] ", "");
+                plugin.getServer().dispatchCommand(plugin.getServer().getConsoleSender(), reward);
+            }
+        }
 
         bossRushTask.cancel();
     }

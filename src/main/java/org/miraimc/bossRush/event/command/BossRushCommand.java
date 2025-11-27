@@ -9,6 +9,8 @@ import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
 import org.miraimc.bossRush.util.TextUtil;
 
+import java.util.List;
+
 @CommandAlias("bossrush")
 @CommandPermission("bossrush.admin")
 public class BossRushCommand extends BaseCommand {
@@ -35,7 +37,13 @@ public class BossRushCommand extends BaseCommand {
 
         sender.sendMessage(TextUtil.translate("&fEvent Name: &b" + event.getName()));
         sender.sendMessage(TextUtil.translate("&fEvent Time: &b" + event.getTime()));
+        sender.sendMessage(TextUtil.translate("&fEvent Time Limit: &b" + event.getMaxTime()));
         sender.sendMessage(TextUtil.translate("&fEvent Running: &b" + event.isRunning()));
+        sender.sendMessage(TextUtil.translate("&bEvent Rewards:"));
+        List<String> rewards = plugin.getEventsFile().getStringList("events." + event.getName() + ".rewards");
+        for (String reward : rewards) {
+            sender.sendMessage(TextUtil.translate(" " + reward));
+        }
         sender.sendMessage(TextUtil.translate(LINE));
     }
 

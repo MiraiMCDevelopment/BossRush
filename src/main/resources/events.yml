@@ -3,16 +3,16 @@ events:
     entity: ENDER_DRAGON
     max_time: 1800
     started:
-      title: "&b&lEvent Started"
+      title: "&b&lBoss Rush Started"
       subtitle: "&fObjective: Kill Ender Dragon"
       messages:
         - "&aEvent has been started!"
     ended:
-      title: "&c&lEvent Ended"
+      title: "&c&lBoss Rush Ended"
       subtitle: "&fWinner: &b{winner}"
       messages:
         - "&aEvent has been ended!"
         - "&fWinner: &b{winner}"
         - "&fTime: &b{time_ms}"
-    reward:
-      - ""
+    rewards:
+      - "[Console] say {winner} is winner!"
