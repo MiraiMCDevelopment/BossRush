@@ -1,6 +1,5 @@
 package org.miraimc.bossRush.bossbar;
 
-import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
@@ -13,7 +12,6 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Getter
 public class BossBarManager {
 
     private final BossRush plugin;
@@ -60,5 +58,11 @@ public class BossBarManager {
         int eventMaxTime = bossRushEvent.getMaxTime();
 
         bar.setProgress((double) (eventMaxTime - eventTime) / eventMaxTime);
+    }
+
+    public void unregisterPlayerBossBar(Player player) {
+        BossBar bar = bossBars.get(player.getUniqueId());
+        bossBars.remove(player.getUniqueId());
+        bar.removePlayer(player);
     }
 }

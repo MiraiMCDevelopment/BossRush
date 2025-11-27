@@ -107,6 +107,7 @@ public class BossRushEventManager {
                     .replace("{time}", titleStr)
                     .replace("{formatted_time}", formattedTime)
             )));
+            plugin.getBossBarManager().unregisterPlayerBossBar(player);
         });
 
         giveRewards(bossRushEvent);

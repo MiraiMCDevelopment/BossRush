@@ -24,6 +24,6 @@ public class BossBarListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        plugin.getBossBarManager().getBossBars().remove(player.getUniqueId());
+        plugin.getBossBarManager().unregisterPlayerBossBar(player);
     }
 }
