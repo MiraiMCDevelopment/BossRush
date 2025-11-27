@@ -64,6 +64,8 @@ public class BossRushEventManager {
             bossRushTask = new BossRushTask(plugin);
             bossRushTask.runTaskTimer(plugin, 0L, 20L);
         }
+
+        plugin.getBossBarManager().registerAllPlayersBossBar();
     }
 
     public void endEvent(BossRushEvent bossRushEvent) {

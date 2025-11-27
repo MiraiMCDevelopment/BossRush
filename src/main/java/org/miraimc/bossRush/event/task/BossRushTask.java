@@ -1,5 +1,6 @@
 package org.miraimc.bossRush.event.task;
 
+import org.bukkit.Bukkit;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
@@ -16,6 +17,7 @@ public class BossRushTask extends BukkitRunnable {
     public void run() {
         BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
         bossRushEvent.setTime(bossRushEvent.getTime() + 1);
+        Bukkit.getOnlinePlayers().forEach(player -> plugin.getBossBarManager().updateProgress(player));
 
         if (bossRushEvent.getTime() >= bossRushEvent.getMaxTime()) {
             plugin.getBossRushEventManager().endEvent(bossRushEvent);

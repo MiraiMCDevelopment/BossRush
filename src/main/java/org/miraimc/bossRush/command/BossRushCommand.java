@@ -1,4 +1,4 @@
-package org.miraimc.bossRush.event.command;
+package org.miraimc.bossRush.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
