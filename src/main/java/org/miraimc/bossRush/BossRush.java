@@ -31,6 +31,7 @@ public final class BossRush extends JavaPlugin {
     @Override
     public void onDisable() {
         getLogger().info("Disabling BossRush");
+        bossBarManager.cleanup();
     }
 
     private void loadConfigFiles() {
