@@ -80,6 +80,8 @@ public class BossRushEventManager {
             bossRushTask = new BossRushTask(plugin);
             bossRushTask.runTaskTimer(plugin, 0L, 20L);
         }
+
+        plugin.getBossRushWebhook().sendEventEndWebhook();
     }
 
     public void endEvent(BossRushEvent bossRushEvent) {
@@ -99,7 +101,9 @@ public class BossRushEventManager {
 
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
+
         if (winner == null) {
+            plugin.getBossRushWebhook().sendEventEndWebhook();
             String forceEndedMessage = plugin.getLangFile().getString("event.force_ended");
             for (Player player : players) {
                 player.sendMessage(forceEndedMessage);
@@ -119,6 +123,7 @@ public class BossRushEventManager {
 
         String winnerName = winner.getName();
         bossRushEvent.setWinnerUuid(winner.getUniqueId());
+        plugin.getBossRushWebhook().sendEventEndWebhook();
 
         String titleStr = section.getString("title").replace("{winner}", winner.getName());
         String subtitleStr = section.getString("subtitle").replace("{winner}", winner.getName());

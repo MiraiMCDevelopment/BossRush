@@ -10,17 +10,21 @@ import org.miraimc.bossRush.command.BossRushCommand;
 import org.miraimc.bossRush.event.listener.BossRushListener;
 import org.miraimc.bossRush.schedule.ScheduleManager;
 import org.miraimc.bossRush.util.BasicConfigFile;
+import org.miraimc.bossRush.webhook.BossRushWebhook;
 
 @Getter
 public final class BossRush extends JavaPlugin {
 
+    @Getter private static BossRush instance;
     private BasicConfigFile configFile, langFile, eventsFile;
     private BossRushEventManager bossRushEventManager;
     private BossBarManager bossBarManager;
     private ScheduleManager scheduleManager;
+    private BossRushWebhook bossRushWebhook;
 
     @Override
     public void onEnable() {
+        instance = this;
         getLogger().info("Enabling BossRush");
         loadConfigFiles();
         registerManagers();
@@ -47,6 +51,7 @@ public final class BossRush extends JavaPlugin {
         bossBarManager = new BossBarManager(this);
         scheduleManager = new ScheduleManager(this);
         scheduleManager.loadSchedules();
+        bossRushWebhook = new BossRushWebhook(this);
     }
 
     private void registerListeners() {

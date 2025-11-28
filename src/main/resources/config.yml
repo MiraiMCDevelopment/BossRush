@@ -8,3 +8,6 @@ event:
 boss_bar:
   color: "PURPLE"
   style: "SOLID"
+webhook:
+  enabled: true
+  url: ""

@@ -1,0 +1,28 @@
+{
+  "content": "<@&1433828440372416762>",
+  "embeds": [
+    {
+      "title": "⚡ Boss Rush Event",
+      "description": "Event has been ended!",
+      "color": 48127,
+      "fields": [
+        {
+          "name": "Objective",
+          "value": "{event_objective}"
+        },
+        {
+          "name": "Winner",
+          "value": "{event_winner}"
+        },
+        {
+          "name": "Elapsed Time",
+          "value": "`{event_eslaped_time}`"
+        }
+      ],
+      "thumbnail": {
+        "url": "https://skins.mcstats.com/bust/{event_winner_uuid}"
+      }
+    }
+  ],
+  "attachments": []
+}

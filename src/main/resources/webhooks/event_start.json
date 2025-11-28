@@ -1,0 +1,21 @@
+{
+  "content": "<@&1433828440372416762>",
+  "embeds": [
+    {
+      "title": "⚡ Boss Rush Event",
+      "description": "Event has been started!",
+      "color": 48127,
+      "fields": [
+        {
+          "name": "Objective",
+          "value": "Kill the {event_objective}!"
+        },
+        {
+          "name": "Time Limit",
+          "value": "{event_max_time}"
+        }
+      ]
+    }
+  ],
+  "attachments": []
+}
