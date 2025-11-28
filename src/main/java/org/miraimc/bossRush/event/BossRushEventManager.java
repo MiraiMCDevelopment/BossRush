@@ -81,7 +81,7 @@ public class BossRushEventManager {
             bossRushTask.runTaskTimer(plugin, 0L, 20L);
         }
 
-        plugin.getBossRushWebhook().sendEventEndWebhook();
+        plugin.getBossRushWebhook().sendEventStartWebhook();
     }
 
     public void endEvent(BossRushEvent bossRushEvent) {
