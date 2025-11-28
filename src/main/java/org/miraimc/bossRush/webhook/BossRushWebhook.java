@@ -10,7 +10,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BossRushWebhook {
@@ -57,7 +56,7 @@ public class BossRushWebhook {
         placeholders.put("{event_objective}", eventObjective);
         placeholders.put("{event_max_time}", eventEndedAt);
         placeholders.put("{event_winner}", winnerName);
-        placeholders.put("{event_winner_uuid}", winnerName);
+        placeholders.put("{event_winner_uuid}", event.getWinnerUuid().toString());
         placeholders.put("{event_elapsed_time}", elapsedTime);
 
         WebhookUtil.sendWebhook(file, plugin.getConfigFile().getString("webhook.url"), placeholders);
