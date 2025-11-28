@@ -1,12 +1,14 @@
 package org.miraimc.bossRush.bossbar;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
+import org.miraimc.bossRush.util.TextUtil;
 
 import java.util.Collection;
 import java.util.Map;
@@ -78,7 +80,8 @@ public class BossBarManager {
             return;
         }
 
-        BossBar bar = Bukkit.createBossBar(event.getBossBar(), cachedColor, cachedStyle);
+        String bossBarName = ChatColor.translateAlternateColorCodes('&', event.getBossBar());
+        BossBar bar = Bukkit.createBossBar(bossBarName, cachedColor, cachedStyle);
         bar.setVisible(true);
         bar.addPlayer(player);
         bossBars.put(uuid, bar);
