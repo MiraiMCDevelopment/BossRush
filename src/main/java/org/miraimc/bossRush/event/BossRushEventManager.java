@@ -43,8 +43,9 @@ public class BossRushEventManager {
         }
 
         int maxTime = section.getInt("max_time", 1800);
+        String bossBar = section.getString("boss_bar");
 
-        bossRushEvent = new BossRushEvent(name, entity, maxTime);
+        bossRushEvent = new BossRushEvent(name, entity, maxTime, bossBar);
         return true;
     }
 

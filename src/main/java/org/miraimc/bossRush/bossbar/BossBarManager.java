@@ -18,7 +18,6 @@ public class BossBarManager {
     private final BossRush plugin;
     private final Map<UUID, BossBar> bossBars = new ConcurrentHashMap<>();
 
-    private String cachedTitle;
     private BarColor cachedColor;
     private BarStyle cachedStyle;
 
@@ -28,8 +27,6 @@ public class BossBarManager {
     }
 
     private void loadBossBarSettings() {
-        cachedTitle = plugin.getLangFile().getString("boss_bar.title");
-
         String colorStr = plugin.getConfigFile().getString("boss_bar.color");
         String styleStr = plugin.getConfigFile().getString("boss_bar.style");
 
@@ -81,7 +78,7 @@ public class BossBarManager {
             return;
         }
 
-        BossBar bar = Bukkit.createBossBar(cachedTitle, cachedColor, cachedStyle);
+        BossBar bar = Bukkit.createBossBar(event.getBossBar(), cachedColor, cachedStyle);
         bar.setVisible(true);
         bar.addPlayer(player);
         bossBars.put(uuid, bar);
