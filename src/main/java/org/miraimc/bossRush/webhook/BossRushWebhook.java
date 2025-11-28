@@ -1,13 +1,17 @@
 package org.miraimc.bossRush.webhook;
 
+import org.bukkit.Bukkit;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
 import org.miraimc.bossRush.util.TimeFormatUtil;
 import org.miraimc.bossRush.util.WebhookUtil;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class BossRushWebhook {
 
@@ -25,8 +29,9 @@ public class BossRushWebhook {
             return;
         }
 
-        String eventMaxTime = "<t:" + System.currentTimeMillis() + event.getMaxTime() + ":R>";
-        String eventObjective = event.getEntityType().name();
+        long endTimeStamp = (event.getStartedAt() / 1000) + event.getMaxTime();
+        String eventMaxTime = "<t:" + endTimeStamp + ":R>";
+        String eventObjective = getEventObjectiveName(event);
 
         Map<String, String> placeholders = new HashMap<>();
         placeholders.put("{event_objective}", eventObjective);
@@ -39,13 +44,13 @@ public class BossRushWebhook {
         File file = WebhookUtil.loadFile("event_end.json");
 
         BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
-        if (event == null || !event.isRunning() || !plugin.getConfigFile().getBoolean("webhook.enabled")) {
+        if (event == null || !plugin.getConfigFile().getBoolean("webhook.enabled")) {
             return;
         }
 
-        String eventEndedAt = "<t:" + event.getEndedAt() + ":R>";
-        String eventObjective = event.getEntityType().name();
-        String winnerName = event.getWinnerUuid() != null ? event.getWinnerUuid().toString() : "No One";
+        String eventEndedAt = "<t:" + (event.getEndedAt() / 1000) + ":R>";
+        String eventObjective = getEventObjectiveName(event);
+        String winnerName = event.getWinnerUuid() != null ? Bukkit.getPlayer(event.getWinnerUuid()).getName() : "No One";
         String elapsedTime = TimeFormatUtil.formatMillis(event.getEndedAt() - event.getStartedAt());
 
         Map<String, String> placeholders = new HashMap<>();
@@ -55,7 +60,13 @@ public class BossRushWebhook {
         placeholders.put("{event_winner_uuid}", winnerName);
         placeholders.put("{event_elapsed_time}", elapsedTime);
 
-
         WebhookUtil.sendWebhook(file, plugin.getConfigFile().getString("webhook.url"), placeholders);
     }
+
+    private String getEventObjectiveName(BossRushEvent event) {
+        return Arrays.stream(event.getEntityType().name().split("_"))
+                .map(s -> s.substring(0,1).toUpperCase() + s.substring(1).toLowerCase())
+                .collect(Collectors.joining(" "));
+    }
+
 }

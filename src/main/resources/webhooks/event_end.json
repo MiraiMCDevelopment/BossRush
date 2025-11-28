@@ -16,7 +16,7 @@
         },
         {
           "name": "Elapsed Time",
-          "value": "`{event_eslaped_time}`"
+          "value": "`{event_elapsed_time}`"
         }
       ],
       "thumbnail": {

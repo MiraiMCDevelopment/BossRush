@@ -101,10 +101,9 @@ public class BossRushEventManager {
 
         Collection<? extends Player> players = Bukkit.getOnlinePlayers();
 
-
         if (winner == null) {
-            plugin.getBossRushWebhook().sendEventEndWebhook();
             String forceEndedMessage = plugin.getLangFile().getString("event.force_ended");
+            plugin.getBossRushWebhook().sendEventEndWebhook();
             for (Player player : players) {
                 player.sendMessage(forceEndedMessage);
                 player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
