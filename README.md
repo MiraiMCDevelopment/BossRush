@@ -1,8 +1,7 @@
 # BossRush
 ## Commands
 - `/bossrush info`
-- `/bossrush load <event>`
-- `/bossrush start`
+- `/bossrush start <event>`
 - `/bossrush end`
 - `/bossrush reload`
 ## Permissions
@@ -11,20 +10,11 @@
 ```yaml
 events:
   ender_dragon:
-    entity: ENDER_DRAGON
-    max_time: 1800
-    started:
-      title: "&b&lBoss Rush Started"
-      subtitle: "&fObjective: Kill Ender Dragon"
-      messages:
-        - "&aEvent has been started!"
-    ended:
-      title: "&c&lBoss Rush Ended"
-      subtitle: "&fWinner: &b{winner}"
-      messages:
-        - "&aEvent has been ended!"
-        - "&fWinner: &b{winner}"
-        - "&fTime: &b{time_ms}"
+    display_name: "Ender Dragon"
+    entity_type: ENDER_DRAGON
+    time_limit: 28800
     rewards:
-      - "[Console] say {winner} is winner!"
+      name: "&bMVP&c+"
+      action:
+        - "[Console] ogrant {winner} MVP+ 7d global Boss Rush Winner"
 ```
