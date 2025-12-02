@@ -5,6 +5,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.miraimc.bossRush.BossRush;
+import org.miraimc.bossRush.event.BossRushData;
 import org.miraimc.bossRush.event.BossRushEvent;
 
 public class BossRushListener implements Listener {
@@ -17,18 +18,20 @@ public class BossRushListener implements Listener {
 
     @EventHandler
     public void onEntityDeath(EntityDeathEvent event) {
-        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
+        BossRushEvent bossRushEvent = plugin.getBossRushManager().getBossRushEvent();
         if (bossRushEvent == null || !bossRushEvent.isRunning()) {
             return;
         }
 
-        if (event.getEntity().getKiller() == null) {
+        BossRushData data = bossRushEvent.getBossRushData();
+
+        Player killer = event.getEntity().getKiller();
+        if (killer == null) {
             return;
         }
 
-        if (event.getEntityType() == bossRushEvent.getEntityType()) {
-            Player killer = event.getEntity().getKiller();
-            plugin.getBossRushEventManager().endEvent(bossRushEvent, killer);
+        if (event.getEntityType() == data.getEntityType()) {
+            plugin.getBossRushManager().endEvent(killer);
         }
     }
 }

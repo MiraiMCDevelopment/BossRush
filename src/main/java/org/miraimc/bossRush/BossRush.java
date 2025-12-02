@@ -6,8 +6,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.miraimc.bossRush.bossbar.BossBarListener;
 import org.miraimc.bossRush.bossbar.BossBarManager;
 import org.miraimc.bossRush.command.BossRushCommand;
-import org.miraimc.bossRush.event.BossRushEventManager;
+import org.miraimc.bossRush.event.BossRushHandler;
+import org.miraimc.bossRush.event.BossRushManager;
 import org.miraimc.bossRush.event.listener.BossRushListener;
+import org.miraimc.bossRush.event.reward.RewardManager;
 import org.miraimc.bossRush.schedule.ScheduleManager;
 import org.miraimc.bossRush.util.BasicConfigFile;
 import org.miraimc.bossRush.webhook.BossRushWebhook;
@@ -17,7 +19,9 @@ public final class BossRush extends JavaPlugin {
 
     @Getter private static BossRush instance;
     private BasicConfigFile configFile, langFile, eventsFile;
-    private BossRushEventManager bossRushEventManager;
+    private BossRushManager bossRushManager;
+    private BossRushHandler bossRushHandler;
+    private RewardManager rewardManager;
     private BossBarManager bossBarManager;
     private ScheduleManager scheduleManager;
     private BossRushWebhook bossRushWebhook;
@@ -47,7 +51,10 @@ public final class BossRush extends JavaPlugin {
 
     private void registerManagers() {
         getLogger().info("Registering BossRush managers");
-        bossRushEventManager = new BossRushEventManager(this);
+        bossRushManager = new BossRushManager(this);
+        bossRushManager.loadAllData();
+        bossRushHandler = new BossRushHandler(this);
+        rewardManager = new RewardManager();
         bossBarManager = new BossBarManager(this);
         scheduleManager = new ScheduleManager(this);
         scheduleManager.loadSchedules();

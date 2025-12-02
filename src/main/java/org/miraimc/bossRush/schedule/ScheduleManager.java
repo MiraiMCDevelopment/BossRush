@@ -132,10 +132,9 @@ public class ScheduleManager {
 
     private void triggerEvent(String eventName) {
         plugin.getLogger().info("Triggering scheduled event: " + eventName);
-        plugin.getBossRushEventManager().loadEvent(eventName);
-        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
-        if (bossRushEvent != null && !bossRushEvent.isRunning()) {
-            plugin.getBossRushEventManager().startEvent(bossRushEvent);
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
+        if (event != null && !event.isRunning()) {
+            plugin.getBossRushManager().startEvent(eventName);
         }
     }
 

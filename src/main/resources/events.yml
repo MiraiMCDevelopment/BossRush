@@ -1,19 +1,9 @@
 events:
   ender_dragon:
-    entity: ENDER_DRAGON
-    max_time: 28800
-    boss_bar: "&b&lBoss Rush - Ender Dragon"
-    started:
-      title: "&b&lBoss Rush Started"
-      subtitle: "&fObjective: Kill Ender Dragon"
-      messages:
-        - "&aEvent has been started!"
-    ended:
-      title: "&c&lBoss Rush Ended"
-      subtitle: "&fWinner: &b{winner}"
-      messages:
-        - "&aEvent has been ended!"
-        - "&fWinner: &b{winner}"
-        - "&fTime: &b{formatted_time}"
+    display_name: "Ender Dragon"
+    entity_type: ENDER_DRAGON
+    time_limit: 28800
     rewards:
+      name: "&bMVP&c+"
+      action:
       - "[Console] ogrant {winner} MVP+ 7d global Boss Rush Winner"

@@ -6,6 +6,7 @@ event:
     - "Sunday;21:00;ender_dragon"
     - "Monday;23:00;wither"
 boss_bar:
+  name: "{event}"
   color: "PURPLE"
   style: "SOLID"
 webhook:

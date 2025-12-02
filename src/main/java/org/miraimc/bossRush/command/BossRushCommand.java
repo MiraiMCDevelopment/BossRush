@@ -22,61 +22,68 @@ public class BossRushCommand extends BaseCommand {
         this.plugin = plugin;
     }
 
-    @Subcommand("info")
-    public void onInfo(Player sender) {
-        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+    @Subcommand("debug")
+    public void onDebug(Player sender) {
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
 
         sender.sendMessage(TextUtil.translate(LINE));
         sender.sendMessage(TextUtil.translate("&b&lBoss Rush"));
 
         if (event == null) {
-            sender.sendMessage(TextUtil.translate("&fEvent is not loaded."));
+            sender.sendMessage(TextUtil.translate("&fEvent is null."));
             sender.sendMessage(TextUtil.translate(LINE));
             return;
         }
 
-        sender.sendMessage(TextUtil.translate("&fEvent Name: &b" + event.getName()));
-        sender.sendMessage(TextUtil.translate("&fEvent Time: &b" + event.getTime()));
-        sender.sendMessage(TextUtil.translate("&fEvent Time Limit: &b" + event.getMaxTime()));
+        if (event.getBossRushData() == null) {
+            sender.sendMessage(TextUtil.translate("&fBossRushData is null."));
+            sender.sendMessage(TextUtil.translate(LINE));
+            return;
+        }
+
+        sender.sendMessage(TextUtil.translate("&fEvent Name: &b" + event.getBossRushData().getDisplayName()));
+        sender.sendMessage(TextUtil.translate("&fEvent Time: &b" + event.getDuration()));
+        sender.sendMessage(TextUtil.translate("&fEvent Time Limit: &b" + event.getBossRushData().getTimeLimit()));
         sender.sendMessage(TextUtil.translate("&fEvent Running: &b" + event.isRunning()));
         sender.sendMessage(TextUtil.translate("&bEvent Rewards:"));
-        List<String> rewards = plugin.getEventsFile().getStringList("events." + event.getName() + ".rewards");
-        for (String reward : rewards) {
+        List<String> rewardsAction = plugin.getEventsFile().getStringList("events." + event.getBossRushData().getDisplayName() + ".rewards.action");
+        for (String reward : rewardsAction) {
             sender.sendMessage(TextUtil.translate(" " + reward));
         }
         sender.sendMessage(TextUtil.translate(LINE));
     }
 
     @Subcommand("load")
-    public void onLoad(Player sender, String event) {
-        if (!plugin.getBossRushEventManager().loadEvent(event)) {
+    public void onLoad(Player sender, String eventId) {
+        try {
+            plugin.getBossRushManager().loadData(eventId);
+            sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.loaded")
+                .replace("{event}", eventId)));
+        } catch (Exception e) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_load")));
-            return;
         }
-
-        sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.loaded")
-                .replace("{event}", event)));
     }
 
+
     @Subcommand("start")
-    public void onStart(Player sender) {
-        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
-        if (bossRushEvent == null || bossRushEvent.isRunning()) {
+    public void onStart(Player sender, String eventId) {
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
+        if (event == null || event.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_start")));
             return;
         }
 
-        plugin.getBossRushEventManager().startEvent(bossRushEvent);
+        plugin.getBossRushManager().startEvent(eventId);
     }
 
     @Subcommand("end")
     public void onEnd(Player sender) {
-        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
-        if (bossRushEvent == null || !bossRushEvent.isRunning()) {
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
+        if (event == null || !event.isRunning()) {
             sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("event.unable_end")));
             return;
         }
-        plugin.getBossRushEventManager().endEvent(bossRushEvent);
+        plugin.getBossRushManager().endEvent(null);
     }
 
     @Subcommand("reload")
@@ -84,6 +91,7 @@ public class BossRushCommand extends BaseCommand {
         plugin.getConfigFile().reload();
         plugin.getLangFile().reload();
         plugin.getEventsFile().reload();
+        plugin.getBossRushManager().loadAllData();
         plugin.getScheduleManager().loadSchedules();
 
         sender.sendMessage(TextUtil.translate(plugin.getLangFile().getString("reload")));

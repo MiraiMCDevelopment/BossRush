@@ -4,4 +4,21 @@ event:
   unable_start: "&cUnable to start an event."
   unable_end: "&cUnable to end an event."
   loaded: "&aBoss Rush &e{event} &ahas been loaded."
+  started:
+    title: "&b&lBoss Rush"
+    subtitle: "Kill the &b{event}!"
+    messages:
+      - "&aBoss Rush Event Started!"
+      - "&e{event}"
+  ended:
+    title: "&b&lBoss Rush"
+    subtitle: "Winner is &b{winner}!"
+    messages:
+      - "&aBoss Rush Event Ended!"
+      - "&e{event}"
+      - "&e{winner}"
+      - "&e{rewards}"
+      - "&e{time}"
+player_joined:
+  - "&aBoss Rush Event!"
 reload: "&aBossRush has been reloaded."

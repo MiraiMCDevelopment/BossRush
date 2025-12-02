@@ -2,6 +2,7 @@ package org.miraimc.bossRush.event.task;
 
 import org.bukkit.scheduler.BukkitRunnable;
 import org.miraimc.bossRush.BossRush;
+import org.miraimc.bossRush.event.BossRushData;
 import org.miraimc.bossRush.event.BossRushEvent;
 
 public class BossRushTask extends BukkitRunnable {
@@ -14,19 +15,17 @@ public class BossRushTask extends BukkitRunnable {
 
     @Override
     public void run() {
-        BossRushEvent bossRushEvent = plugin.getBossRushEventManager().getBossRushEvent();
-        if (bossRushEvent == null || !bossRushEvent.isRunning()) {
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
+        if (event == null || !event.isRunning()) {
             cancel();
             return;
         }
 
-        long elapsedMillis = System.currentTimeMillis() - bossRushEvent.getStartedAt();
-        int elapsedSeconds = (int) (elapsedMillis / 1000);
+        BossRushData data = event.getBossRushData();
+        event.setDuration(event.getDuration() + 1);
 
-        bossRushEvent.setTime(elapsedSeconds);
-
-        if (elapsedSeconds >= bossRushEvent.getMaxTime()) {
-            plugin.getBossRushEventManager().endEvent(bossRushEvent);
+        if (event.getDuration() >= data.getTimeLimit()) {
+            plugin.getBossRushManager().endEvent(null);
             cancel();
             return;
         }

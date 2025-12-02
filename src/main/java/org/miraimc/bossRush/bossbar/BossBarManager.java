@@ -47,7 +47,7 @@ public class BossBarManager {
     }
 
     public void registerAllPlayersBossBar() {
-        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
         if (event == null || !event.isRunning()) {
             return;
         }
@@ -63,7 +63,7 @@ public class BossBarManager {
             return;
         }
 
-        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
         if (event == null || !event.isRunning()) {
             return;
         }
@@ -79,7 +79,10 @@ public class BossBarManager {
             return;
         }
 
-        String bossBarName = ChatColor.translateAlternateColorCodes('&', event.getBossBar());
+        String bossBarName = ChatColor.translateAlternateColorCodes('&',
+                plugin.getConfig().getString("boss_bar.name")
+                        .replace("{event}", event.getBossRushData().getDisplayName())
+        );
         BossBar bar = Bukkit.createBossBar(bossBarName, cachedColor, cachedStyle);
         bar.setVisible(true);
         bar.addPlayer(player);
@@ -98,41 +101,41 @@ public class BossBarManager {
             return;
         }
 
-        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
         if (event == null || !event.isRunning()) {
             return;
         }
 
-        int eventTime = event.getTime();
-        int eventMaxTime = event.getMaxTime();
+        int eventTime = event.getDuration();
+        int eventTimeLimit = event.getBossRushData().getTimeLimit();
 
-        if (eventMaxTime <= 0) {
+        if (eventTimeLimit <= 0) {
             bar.setProgress(1.0);
             return;
         }
 
-        int remainingTime = eventMaxTime - eventTime;
-        double progress = (double) remainingTime / eventMaxTime;
+        int remainingTime = eventTimeLimit - eventTime;
+        double progress = (double) remainingTime / eventTimeLimit;
         progress = Math.max(0.0, Math.min(1.0, progress));
 
         bar.setProgress(progress);
     }
 
     public void updateAllProgress() {
-        BossRushEvent event = plugin.getBossRushEventManager().getBossRushEvent();
+        BossRushEvent event = plugin.getBossRushManager().getBossRushEvent();
         if (event == null || !event.isRunning()) {
             return;
         }
 
-        int eventTime = event.getTime();
-        int eventMaxTime = event.getMaxTime();
+        int eventTime = event.getDuration();
+        int eventTimeLimit = event.getBossRushData().getTimeLimit();
 
-        if (eventMaxTime <= 0) {
+        if (eventTimeLimit <= 0) {
             return;
         }
 
-        int remainingTime = eventMaxTime - eventTime;
-        double progress = Math.max(0.0, Math.min(1.0, (double) remainingTime / eventMaxTime));
+        int remainingTime = eventTimeLimit - eventTime;
+        double progress = Math.max(0.0, Math.min(1.0, (double) remainingTime / eventTimeLimit));
 
         for (BossBar bar : bossBars.values()) {
             bar.setProgress(progress);
