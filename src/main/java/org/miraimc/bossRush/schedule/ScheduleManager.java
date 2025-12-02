@@ -1,7 +1,6 @@
 package org.miraimc.bossRush.schedule;
 
 import org.bukkit.Bukkit;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;

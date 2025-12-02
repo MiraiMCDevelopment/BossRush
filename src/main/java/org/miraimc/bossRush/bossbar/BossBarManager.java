@@ -8,7 +8,6 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
-import org.miraimc.bossRush.util.TextUtil;
 
 import java.util.Collection;
 import java.util.Map;
