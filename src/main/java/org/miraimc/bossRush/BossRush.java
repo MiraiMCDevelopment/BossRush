@@ -44,9 +44,9 @@ public final class BossRush extends JavaPlugin {
 
     private void loadConfigFiles() {
         getLogger().info("Loading BossRush config files...");
-        configFile = new BasicConfigFile(this, "config.yml");
-        langFile = new BasicConfigFile(this, "lang.yml");
-        eventsFile = new BasicConfigFile(this, "events.yml");
+        configFile = new BasicConfigFile(this, "config.yml", true);
+        langFile = new BasicConfigFile(this, "lang.yml", true);
+        eventsFile = new BasicConfigFile(this, "events.yml", false);
     }
 
     private void registerManagers() {

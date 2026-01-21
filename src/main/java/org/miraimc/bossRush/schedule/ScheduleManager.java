@@ -25,7 +25,7 @@ public class ScheduleManager {
     public void loadSchedules() {
         cancelAllSchedules();
 
-        List<String> schedules = plugin.getConfigFile().getStringList("event.schedules");
+        List<String> schedules = plugin.getConfigFile().getRawStringList("event.schedules");
         if (schedules == null || schedules.isEmpty()) {
             plugin.getLogger().warning("No event schedules found!");
             return;

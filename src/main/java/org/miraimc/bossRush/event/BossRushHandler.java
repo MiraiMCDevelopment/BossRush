@@ -1,11 +1,11 @@
 package org.miraimc.bossRush.event;
 
+import io.github.milkdrinkers.colorparser.paper.ColorParser;
 import net.kyori.adventure.title.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
-import org.miraimc.bossRush.util.TextUtil;
 import org.miraimc.bossRush.util.TimeFormatUtil;
 
 import java.util.Collection;
@@ -27,24 +27,31 @@ public class BossRushHandler {
         BossRushData data = plugin.getBossRushManager().getBossRushEvent().getBossRushData();
 
         Title title = Title.title(
-                TextUtil.translate(plugin.getLangFile().getString(langPath + "title")
-                        .replace("{event}", data.getDisplayName())
-                ),
-                TextUtil.translate(plugin.getLangFile().getString(langPath + "subtitle")
-                        .replace("{event}", data.getDisplayName())
-                )
-        );
+                ColorParser.of(plugin.getLangFile().getString(langPath + "title"))
+                        .with("event", data.getId())
+                        .with("event_display_name", data.getDisplayName())
+                        .legacy()
+                        .build(),
+                ColorParser.of(plugin.getLangFile().getString(langPath + "subtitle"))
+                        .with("event", data.getDisplayName())
+                        .with("event_display_name", data.getDisplayName())
+                        .legacy()
+                        .build());
 
-        List<String> messages = plugin.getLangFile().getStringList(langPath + "messages");
+        List<String> messages = plugin.getLangFile().getRawStringList(langPath + "messages");
 
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player player : onlinePlayers) {
             player.showTitle(title);
             player.playSound(player.getLocation(), Sound.ENTITY_ENDER_DRAGON_AMBIENT, 1.0F, 1.0F);
-            messages.forEach(message -> player.sendMessage(TextUtil.translate(message
-                    .replace("{event}", data.getDisplayName())
-                    .replace("{reward}", data.getRewardsName())
-            )));
+            messages.forEach(message -> player.sendMessage(ColorParser.of(message)
+                    .with("event", data.getId())
+                    .with("event_display_name", data.getDisplayName())
+                    .with("rewards", data.getRewardsName())
+                    .papi(player)
+                    .legacy()
+                    .build()
+            ));
             plugin.getBossBarManager().registerPlayerBossBar(player);
         }
 
@@ -64,35 +71,42 @@ public class BossRushHandler {
         String time = TimeFormatUtil.formatMillis(event.getEndTime() - event.getStartTime());
 
         Title title = Title.title(
-                TextUtil.translate(plugin.getLangFile().getString(langPath + "title")
-                        .replace("{event}", data.getDisplayName())
-                        .replace("{winner}", winnerName)
-                        .replace("{rewards}", data.getRewardsName())
-                        .replace("{time}", time)
-                ),
-                TextUtil.translate(plugin.getLangFile().getString(langPath + "subtitle")
-                        .replace("{event}", data.getDisplayName())
-                        .replace("{winner}", winnerName)
-                        .replace("{rewards}", data.getRewardsName())
-                        .replace("{time}", time)
-                )
-        );
+                ColorParser.of(plugin.getLangFile().getString(langPath + "title"))
+                        .with("event", data.getId())
+                        .with("event_display_name", data.getDisplayName())
+                        .with("winner", winnerName)
+                        .with("rewards", data.getRewardsName())
+                        .with("time", time)
+                        .legacy()
+                        .build()
+                ,
+                ColorParser.of(plugin.getLangFile().getString(langPath + "subtitle"))
+                        .with("event", data.getId())
+                        .with("event_display_name", data.getDisplayName())
+                        .with("winner", winnerName)
+                        .with("rewards", data.getRewardsName())
+                        .with("time", time)
+                        .legacy()
+                        .build());
 
-        List<String> messages = plugin.getLangFile().getStringList(langPath + "messages");
+        List<String> messages = plugin.getLangFile().getRawStringList(langPath + "messages");
 
         Collection<? extends Player> onlinePlayers = Bukkit.getOnlinePlayers();
         for (Player player : onlinePlayers) {
             player.showTitle(title);
             player.playSound(player.getLocation(), Sound.UI_TOAST_CHALLENGE_COMPLETE, 1.0F, 1.0F);
-            messages.forEach(message -> player.sendMessage(TextUtil.translate(message
-                    .replace("{event}", data.getDisplayName())
-                    .replace("{winner}", winnerName)
-                    .replace("{rewards}", data.getRewardsName())
-                    .replace("{time}", time)
-            )));
+            messages.forEach(message -> player.sendMessage(ColorParser.of(message)
+                    .with("event", data.getId())
+                    .with("event_display_name", data.getDisplayName())
+                    .with("winner", winnerName)
+                    .with("rewards", data.getRewardsName())
+                    .with("time", time)
+                    .papi(player)
+                    .legacy()
+                    .build()
+            ));
             plugin.getBossBarManager().unregisterPlayerBossBar(player);
         }
-
         plugin.getBossRushWebhook().sendEventEndWebhook();
     }
 }

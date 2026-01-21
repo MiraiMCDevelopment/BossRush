@@ -8,12 +8,14 @@ import org.bukkit.boss.BossBar;
 import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
+import org.miraimc.bossRush.util.TimeFormatUtil;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
+@SuppressWarnings("deprecation")
 public class BossBarManager {
 
     private final BossRush plugin;
@@ -28,8 +30,8 @@ public class BossBarManager {
     }
 
     private void loadBossBarSettings() {
-        String colorStr = plugin.getConfigFile().getString("boss_bar.color");
-        String styleStr = plugin.getConfigFile().getString("boss_bar.style");
+        String colorStr = plugin.getConfigFile().getRawString("boss_bar.color");
+        String styleStr = plugin.getConfigFile().getRawString("boss_bar.style");
 
         try {
             cachedColor = BarColor.valueOf(colorStr.toUpperCase());
@@ -80,9 +82,11 @@ public class BossBarManager {
         }
 
         String bossBarName = ChatColor.translateAlternateColorCodes('&',
-                plugin.getConfig().getString("boss_bar.name")
-                        .replace("{event}", event.getBossRushData().getDisplayName())
+                plugin.getConfigFile().getString("boss_bar.name")
+                        .replace("<event>", event.getBossRushData().getId())
+                        .replace("<event_display_name>", event.getBossRushData().getDisplayName())
         );
+
         BossBar bar = Bukkit.createBossBar(bossBarName, cachedColor, cachedStyle);
         bar.setVisible(true);
         bar.addPlayer(player);

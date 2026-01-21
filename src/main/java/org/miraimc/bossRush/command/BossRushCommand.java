@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.annotation.CommandAlias;
 import co.aikar.commands.annotation.CommandPermission;
 import co.aikar.commands.annotation.Subcommand;
+import io.github.milkdrinkers.colorparser.paper.ColorParser;
 import org.bukkit.entity.Player;
 import org.miraimc.bossRush.BossRush;
 import org.miraimc.bossRush.event.BossRushEvent;
@@ -46,9 +47,9 @@ public class BossRushCommand extends BaseCommand {
         sender.sendMessage(TextUtil.translate("&fEvent Time Limit: &b" + event.getBossRushData().getTimeLimit()));
         sender.sendMessage(TextUtil.translate("&fEvent Running: &b" + event.isRunning()));
         sender.sendMessage(TextUtil.translate("&bEvent Rewards:"));
-        List<String> rewardsAction = plugin.getEventsFile().getStringList("events." + event.getBossRushData().getDisplayName() + ".rewards.action");
+        List<String> rewardsAction = plugin.getEventsFile().getRawStringList("events." + event.getBossRushData().getDisplayName() + ".rewards.action");
         for (String reward : rewardsAction) {
-            sender.sendMessage(TextUtil.translate(" " + reward));
+            sender.sendMessage(ColorParser.of(" " + reward).papi(sender).legacy().build());
         }
         sender.sendMessage(TextUtil.translate(LINE));
     }

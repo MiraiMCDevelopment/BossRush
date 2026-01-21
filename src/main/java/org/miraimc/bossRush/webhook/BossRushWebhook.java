@@ -41,7 +41,7 @@ public class BossRushWebhook {
         placeholders.put("{event_objective}", eventObjective);
         placeholders.put("{event_max_time}", eventMaxTime);
 
-        WebhookUtil.sendWebhook(file, plugin.getConfigFile().getString("webhook.url"), placeholders);
+        WebhookUtil.sendWebhook(file, plugin.getConfigFile().getRawString("webhook.url"), placeholders);
     }
 
     public void sendEventEndWebhook() {
@@ -79,7 +79,7 @@ public class BossRushWebhook {
         placeholders.put("{event_winner_uuid}", winnerIdString);
         placeholders.put("{event_elapsed_time}", elapsedTime);
 
-        WebhookUtil.sendWebhook(file, plugin.getConfigFile().getString("webhook.url"), placeholders);
+        WebhookUtil.sendWebhook(file, plugin.getConfigFile().getRawString("webhook.url"), placeholders);
     }
 
     private String getEventEntityName(BossRushData data) {

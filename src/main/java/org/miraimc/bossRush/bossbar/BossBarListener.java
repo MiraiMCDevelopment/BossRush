@@ -1,5 +1,6 @@
 package org.miraimc.bossRush.bossbar;
 
+import io.github.milkdrinkers.colorparser.paper.ColorParser;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,9 +25,14 @@ public class BossBarListener implements Listener {
         BossRushEvent bossRushEvent = plugin.getBossRushManager().getBossRushEvent();
         if (bossRushEvent != null && bossRushEvent.isRunning()) {
             plugin.getBossBarManager().registerPlayerBossBar(player);
-            plugin.getLangFile().getStringList("player_joined").forEach(message -> {
-                player.sendMessage(message
-                        .replace("{event}", bossRushEvent.getBossRushData().getDisplayName())
+            plugin.getLangFile().getRawStringList("player_joined").forEach(message -> {
+                player.sendMessage(ColorParser.of(message)
+                        .with("event", bossRushEvent.getBossRushData().getId())
+                        .with("event_display_name", bossRushEvent.getBossRushData().getDisplayName())
+                        .with("rewards", bossRushEvent.getBossRushData().getRewardsName())
+                        .papi(player)
+                        .legacy()
+                        .build()
                 );
             });
         }

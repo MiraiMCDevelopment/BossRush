@@ -1,8 +1,6 @@
 package org.miraimc.bossRush.util;
 
 import lombok.Getter;
-import lombok.Setter;
-import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -11,139 +9,115 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
+import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Getter
-@Setter
 public class BasicConfigFile {
 
-    private JavaPlugin plugin;
-    private String fileName;
+    private final JavaPlugin plugin;
+    private final String fileName;
+    private final boolean autoUpdate;
     private YamlConfiguration configuration;
+    private final File file;
 
-    private File file;
-
-    public BasicConfigFile(JavaPlugin plugin, String fileName) {
-        this.plugin = plugin;
-        this.fileName = fileName;
+    public BasicConfigFile(JavaPlugin plugin, String fileName, boolean autoUpdate) {
+        this.plugin = Objects.requireNonNull(plugin, "plugin cannot be null");
+        this.fileName = Objects.requireNonNull(fileName, "fileName cannot be null");
+        this.autoUpdate = autoUpdate;
         this.file = new File(plugin.getDataFolder(), fileName);
+
         if (!this.file.exists()) {
             plugin.saveResource(fileName, false);
         }
-        this.load();
+        load();
     }
 
     public boolean getBoolean(String path) {
-        return (this.configuration.contains(path)) && (this.configuration.getBoolean(path));
+        return configuration.getBoolean(path, false);
     }
 
     public double getDouble(String path) {
-        if (this.configuration.contains(path)) {
-            return this.configuration.getDouble(path);
-        }
-        return 0.0D;
-    }
-
-    public File getFile() {
-        return this.file;
+        return configuration.getDouble(path, 0.0D);
     }
 
     public int getInt(String path) {
-        if (this.configuration.contains(path)) {
-            return this.configuration.getInt(path);
-        }
-        return 0;
+        return configuration.getInt(path, 0);
+    }
+
+    public String getRawString(String path) {
+        return configuration.getString(path, "");
+    }
+
+    public List<String> getRawStringList(String path) {
+        return configuration.getStringList(path);
     }
 
     public String getString(String path) {
-        if (this.configuration.contains(path)) {
-            return ChatColor.translateAlternateColorCodes('&', this.configuration.getString(path));
-        }
-        return path;
+        String value = configuration.getString(path);
+        return value != null ? TextUtil.translate(value) : "";
     }
 
     public List<String> getStringList(String path) {
-        if (this.configuration.contains(path)) {
-            ArrayList<String> strings = new ArrayList<String>();
-            for (String string : this.configuration.getStringList(path)) {
-                strings.add(ChatColor.translateAlternateColorCodes('&', string));
-            }
-            return strings;
+        List<String> list = configuration.getStringList(path);
+        if (list == null || list.isEmpty()) {
+            return Collections.emptyList();
         }
-        return Collections.singletonList(path);
+        return list.stream()
+                .filter(Objects::nonNull)
+                .map(TextUtil::translate)
+                .collect(Collectors.toList());
     }
 
     public List<?> getList(String path) {
-        if (this.configuration.contains(path)) {
-            return this.configuration.getList(path);
-        }
-        return Collections.emptyList();
-    }
-
-    public void setBoolean(String path, boolean value) {
-        this.configuration.set(path, value);
-    }
-
-    public void setDouble(String path, double value) {
-        this.configuration.set(path, value);
-    }
-
-    public void setInt(String path, int value) {
-        this.configuration.set(path, value);
-    }
-
-    public void setString(String path, String value) {
-        this.configuration.set(path, value);
-    }
-
-    public void setStringList(String path, List<String> value) {
-        this.configuration.set(path, value);
+        return configuration.getList(path, Collections.emptyList());
     }
 
     public void set(String path, Object value) {
-        this.configuration.set(path, value);
+        configuration.set(path, value);
     }
 
     public void remove(String path) {
-        this.configuration.set(path, null);
+        configuration.set(path, null);
     }
 
     public void load() {
-        this.file = new File(plugin.getDataFolder(), fileName);
-        if (!this.file.exists()) {
-            plugin.saveResource(fileName, false);
-        }
         this.configuration = YamlConfiguration.loadConfiguration(this.file);
 
-        InputStream defConfigStream = plugin.getResource(fileName);
-        if (defConfigStream != null) {
-            YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(new InputStreamReader(defConfigStream));
-            this.configuration.setDefaults(defConfig);
-            this.configuration.options().copyDefaults(true);
-            save();
+        try (InputStream defConfigStream = plugin.getResource(fileName)) {
+            if (defConfigStream != null) {
+                YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(
+                        new InputStreamReader(defConfigStream, StandardCharsets.UTF_8));
+                configuration.setDefaults(defConfig);
+
+                if (autoUpdate) {
+                    configuration.options().copyDefaults(true);
+                    save();
+                }
+            }
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to load default config for " + fileName);
+            e.printStackTrace();
         }
     }
 
     public void save() {
         try {
-            this.configuration.save(this.file);
+            configuration.save(file);
         } catch (IOException e) {
+            plugin.getLogger().severe("Failed to save config file: " + fileName);
             e.printStackTrace();
         }
     }
 
     public void reload() {
         load();
-        save();
     }
 
-    public ConfigurationSection getConfigurationSection(final String path) {
-        if (this.configuration.contains(path)) {
-            return this.configuration.getConfigurationSection(path);
-        }
-        return null;
+    public ConfigurationSection getConfigurationSection(String path) {
+        return configuration.getConfigurationSection(path);
     }
-
 }

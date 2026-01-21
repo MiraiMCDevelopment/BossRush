@@ -16,7 +16,7 @@ public class RewardManager {
         String winnerName = winner.getName();
         List<String> rewards = data.getRewardsAction();
         for (String reward : rewards) {
-            String rewardAction = reward.replace("{winner}", winnerName);
+            String rewardAction = reward.replace("<winner>", winnerName);
 
             if (rewardAction.startsWith("[Console] ")) {
                 String command = rewardAction.replace("[Console] ", "");

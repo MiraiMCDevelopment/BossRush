@@ -10,7 +10,13 @@ public class TimeFormatUtil {
         long minutes = (millis / (1000 * 60)) % 60;
         long seconds = (millis / 1000) % 60;
         long ms = millis % 1000;
-
         return String.format("%02d:%02d:%02d.%03d", hours, minutes, seconds, ms);
+    }
+
+    public static String formatMillisHHMMSS(long millis) {
+        long hours = millis / (1000 * 60 * 60);
+        long minutes = (millis / (1000 * 60)) % 60;
+        long seconds = (millis / 1000) % 60;
+        return String.format("%02d:%02d:%02d", hours, minutes, seconds);
     }
 }
